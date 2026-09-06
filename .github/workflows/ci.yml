@@ -1,0 +1,36 @@
+name: Rust CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Install Rust toolchain and set up automatic caching
+      - name: Setup Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      # 3. Check formatting (Ensure code follows style guidelines)
+      - name: Check formatting
+        run: cargo fmt --check
+
+      # 4. Run Clippy (Rust linter for common bugs/improvements)
+      - name: Run Clippy linter
+        run: cargo clippy -- -D warnings
+
+      # 5. Run all unit and integration tests
+      - name: Run tests
+        run: cargo test --verbose
